@@ -8,9 +8,9 @@ func InitRoutes() *chi.Mux {
 	r.Route("/api/data", func(r chi.Router) {
 		r.Route("/{unit}", func(r chi.Router) {
 			// Post new value to the :unit: list
-			r.Post("/", nil)
+			r.Post("/", HandlePost)
 			// Get list of all value of type :unit:
-			r.Get("/", nil)
+			r.Get("/", HandleGet)
 
 			r.Route("/{uuid}", func(r chi.Router) {
 				// Manipulate with single record

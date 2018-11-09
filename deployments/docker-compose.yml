@@ -1,0 +1,12 @@
+version: '3'
+services:
+  service:
+    build: .
+    ports:
+     - "7081:7081"
+  db:
+    image: "mongo"
+    volumes: 
+      - "auth-service-db:/etc/mongo"
+volumes:
+  auth-service-db:

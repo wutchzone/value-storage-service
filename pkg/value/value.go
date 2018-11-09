@@ -1,12 +1,26 @@
 package value
 
-import "github.com/gofrs/uuid"
+import (
+	"time"
+
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
+)
 
 // Value that is represented like a struct
 type Value struct {
-	Key   string
-	Value string
-	UUID  string
+	ID         objectid.ObjectID `bson:"_id,omitempty"`
+	Key        string
+	Value      string
+	DeviceID   string
+	Location   Location
+	ModifiedAt time.Time
+	CreatedAt  time.Time
+}
+
+// Location where value was captured
+type Location struct {
+	Lat string
+	Lon string
 }
 
 // NewValue return new struct
@@ -14,6 +28,6 @@ func NewValue(key string, value string) *Value {
 	return &Value{
 		Key:   key,
 		Value: value,
-		UUID:  uuid.Must(uuid.NewV4()).String(),
+		ID:    objectid.New(),
 	}
 }
