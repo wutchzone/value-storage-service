@@ -5,18 +5,19 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/wutchzone/value-storage-service/pkg/value"
 )
 
 // HandleGet list all values
 func HandleGet(w http.ResponseWriter, r *http.Request) {
+	v := r.Context().Value(value.ValueKey).(value.Value)
 
 	// read documents
-	cursor, err := DB.Collection("inventory").Find(r.Context(), bson.NewDocument())
+	cursor, err := DB.Collection(v.Key).Find(r.Context(), bson.NewDocument())
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	itemsToSend := []value.Value{}
@@ -34,11 +35,10 @@ func HandleGet(w http.ResponseWriter, r *http.Request) {
 
 // HandlePost saves new dato to the DB
 func HandlePost(w http.ResponseWriter, r *http.Request) {
-	v := chi.URLParam(r, "unit")
 
-	if !(len(v) > 0) {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	// if !(len(v) > 0) {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	return
+	// }
 
 }

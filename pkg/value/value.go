@@ -6,6 +6,23 @@ import (
 	"github.com/mongodb/mongo-go-driver/bson/objectid"
 )
 
+type key int
+
+const (
+	// ValueKey for context
+	ValueKey key = iota
+	// FilterKey for context
+	FilterKey
+)
+
+// Filter for searcing in the DB
+type Filter struct {
+	Asc  bool
+	UID  string
+	From time.Time
+	To   time.Time
+}
+
 // Value that is represented like a struct
 type Value struct {
 	ID         objectid.ObjectID `bson:"_id,omitempty"`
