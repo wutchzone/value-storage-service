@@ -45,13 +45,13 @@ func main() {
 	}
 
 	err = client.Connect(context.Background())
+	err = client.Ping(context.Background(), nil)
 	if err != nil {
 		fmt.Println("Client failed connect DB ", err)
 		os.Exit(1)
 	}
 
 	DB = client.Database(Config.TableName)
-	//DB.Collection("test").InsertOne(context.Background(), value.NewValue("test", "20"))
 
 	// Init routes
 	r := InitRoutes()

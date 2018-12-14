@@ -1,0 +1,5 @@
+{
+    "port": 7081,
+    "DBURL": "mongodb://127.0.0.1:27017",
+    "tableName": "DB"
+}

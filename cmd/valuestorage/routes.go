@@ -14,7 +14,7 @@ import (
 func InitRoutes() *chi.Mux {
 	r := chi.NewRouter()
 	r.Get("/", sayHello)
-	r.Route("/api/data", func(r chi.Router) {
+	r.Route("/api", func(r chi.Router) {
 		r.Route("/{unit}", func(r chi.Router) {
 			r.Use(ValueCtx)
 			r.Use(FilterCtx)
@@ -26,9 +26,9 @@ func InitRoutes() *chi.Mux {
 
 			r.Route("/{uuid}", func(r chi.Router) {
 				// Manipulate with single record
-				r.Get("/", nil)
-				r.Delete("/", nil)
-				r.Put("/", nil)
+				r.Get("/", HandleGetOne)
+				r.Delete("/", HandleDeleteOne)
+				r.Put("/", HandleUpdateOne)
 			})
 		})
 	})
@@ -36,7 +36,7 @@ func InitRoutes() *chi.Mux {
 	return r
 }
 
-func sayHello(w http.ResponseWriter, r *http.Request) {
+func sayHello(w http.ResponseWriter, _ *http.Request) {
 	w.Write([]byte("Server is active and listening on port: " + strconv.Itoa(Config.Port)))
 }
 
@@ -45,18 +45,17 @@ func ValueCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var v value.Value
 		err := json.NewDecoder(r.Body).Decode(&v)
-
 		v.Key = chi.URLParam(r, "unit")
-		//fmt.Println("Here", v)
+
 		if v.Key == "" {
 			http.Error(w, "", http.StatusBadRequest)
 			return
 		}
-		if err != nil && r.Method != "GET" {
+		if err != nil && r.Method != "GET" && r.Method != "DELETE" {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		//fmt.Println("Here", v)
+
 		ctx := context.WithValue(r.Context(), value.ValueKey, v)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
@@ -65,6 +64,9 @@ func ValueCtx(next http.Handler) http.Handler {
 // FilterCtx for parsing request data to app understable content
 func FilterCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+
+		}
 		// var v value.Value
 		// err := json.NewDecoder(r.Body).Decode(&v)
 

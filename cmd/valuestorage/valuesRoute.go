@@ -14,7 +14,8 @@ func HandleGet(w http.ResponseWriter, r *http.Request) {
 	v := r.Context().Value(value.ValueKey).(value.Value)
 
 	// read documents
-	cursor, err := DB.Collection(v.Key).Find(r.Context(), bson.NewDocument())
+
+	cursor, err := DB.Collection(v.Key).Find(r.Context(), bson.M{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -35,10 +36,7 @@ func HandleGet(w http.ResponseWriter, r *http.Request) {
 
 // HandlePost saves new dato to the DB
 func HandlePost(w http.ResponseWriter, r *http.Request) {
+	v := r.Context().Value(value.ValueKey).(value.Value)
 
-	// if !(len(v) > 0) {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	return
-	// }
-
+	DB.Collection(v.Key).InsertOne(r.Context(), v)
 }

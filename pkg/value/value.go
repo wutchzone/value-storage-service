@@ -28,7 +28,7 @@ type Value struct {
 	ID         objectid.ObjectID `bson:"_id,omitempty"`
 	Key        string
 	Value      string
-	DeviceID   string
+	DeviceID   string `json:",omitempty"`
 	Location   Location
 	ModifiedAt time.Time
 	CreatedAt  time.Time
@@ -36,15 +36,25 @@ type Value struct {
 
 // Location where value was captured
 type Location struct {
-	Lat string
-	Lon string
+	Lat string `json:",omitempty"`
+	Lon string `json:",omitempty"`
 }
 
 // NewValue return new struct
-func NewValue(key string, value string) *Value {
+func NewValue(key string, value string, loc Location) *Value {
+	// var l *Location
+	// if loc.Lat == "" || loc.Lon == "" {
+	// 	l = &Location{
+	// 		Lat: loc.Lat,
+	// 		Lon: loc.Lon,
+	// 	}
+	// }
 	return &Value{
-		Key:   key,
-		Value: value,
-		ID:    objectid.New(),
+		Key:        key,
+		Value:      value,
+		ID:         objectid.New(),
+		Location:   loc,
+		CreatedAt:  time.Now(),
+		ModifiedAt: time.Now(),
 	}
 }

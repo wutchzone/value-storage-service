@@ -1,8 +1,11 @@
-FROM "golang:1.11-alpine"
+FROM "golang:alpine"
 
 # Install dep (package manager)
+RUN apk update
 RUN apk add curl git
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+
+RUN rm -rf /var/cache/apk/*
 
 # Copy Go files
 WORKDIR /go/src/app
@@ -17,4 +20,4 @@ RUN ls
 RUN go build -o "app"
 
 # Run project
-CMD ["./app"]
+CMD ["./app", "../../configs/config.prod.json" ]
