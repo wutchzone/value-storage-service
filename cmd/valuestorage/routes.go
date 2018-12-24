@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/wutchzone/value-storage-service/pkg/value"
@@ -28,7 +30,7 @@ func InitRoutes() *chi.Mux {
 				// Manipulate with single record
 				r.Get("/", HandleGetOne)
 				r.Delete("/", HandleDeleteOne)
-				r.Put("/", HandleUpdateOne)
+				// r.Put("/", HandleUpdateOne) Maybe it is not neccesarry to update values
 			})
 		})
 	})
@@ -65,17 +67,20 @@ func ValueCtx(next http.Handler) http.Handler {
 func FilterCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
+			f := value.Filter{}
 
+			if ffrom, err := time.Parse(time.RFC3339, strings.Split(strings.Replace(r.URL.Query().Get("from"), " ", "+", -1), "+")[0]); err == nil {
+				f.From = &ffrom
+			}
+			if ftom, err := time.Parse(time.RFC3339, strings.Split(strings.Replace(r.URL.Query().Get("to"), " ", "+", -1), "+")[0]); err == nil {
+				f.To = &ftom
+			}
+
+			ctx := context.WithValue(r.Context(), value.FilterKey, f)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		} else {
+			next.ServeHTTP(w, r)
 		}
-		// var v value.Value
-		// err := json.NewDecoder(r.Body).Decode(&v)
 
-		// if err != nil {
-		// 	http.Error(w, http.StatusText(http.StatusBadRequest), 404)
-		// 	return
-		// }
-
-		// ctx := context.WithValue(r.Context(), value.ValueKey, v)
-		next.ServeHTTP(w, r)
 	})
 }

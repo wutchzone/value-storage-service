@@ -18,37 +18,29 @@ const (
 // Filter for searcing in the DB
 type Filter struct {
 	Asc  bool
-	UID  string
-	From time.Time
-	To   time.Time
+	From *time.Time
+	To   *time.Time
 }
 
 // Value that is represented like a struct
 type Value struct {
 	ID         objectid.ObjectID `bson:"_id,omitempty"`
-	Key        string
-	Value      string
-	DeviceID   string `json:",omitempty"`
-	Location   Location
-	ModifiedAt time.Time
-	CreatedAt  time.Time
+	Key        string            `bson:"key"`
+	Value      string            `bson:"value"`
+	DeviceID   string            `bson:"device_id"`
+	Location   Location          `bson:"location"`
+	ModifiedAt time.Time         `bson:"modified_at"`
+	CreatedAt  time.Time         `bson:"created_at"`
 }
 
 // Location where value was captured
 type Location struct {
-	Lat string `json:",omitempty"`
-	Lon string `json:",omitempty"`
+	Lat string
+	Lon string
 }
 
 // NewValue return new struct
 func NewValue(key string, value string, loc Location) *Value {
-	// var l *Location
-	// if loc.Lat == "" || loc.Lon == "" {
-	// 	l = &Location{
-	// 		Lat: loc.Lat,
-	// 		Lon: loc.Lon,
-	// 	}
-	// }
 	return &Value{
 		Key:        key,
 		Value:      value,

@@ -29,15 +29,18 @@ func HandleGetOne(w http.ResponseWriter, r *http.Request) {
 }
 
 // HandleUpdateOne updates corresponding record
-func HandleUpdateOne(w http.ResponseWriter, r *http.Request) {
-	v := r.Context().Value(value.ValueKey).(value.Value)
-	uid := chi.URLParam(r, "uuid")
+// func HandleUpdateOne(w http.ResponseWriter, r *http.Request) {
+// 	v := r.Context().Value(value.ValueKey).(value.Value)
+// 	uid := chi.URLParam(r, "uuid")
+// 	v.ModifiedAt = time.Now()
 
-	oid, _ := objectid.FromHex(uid)
-	if DB.Collection(v.Key).FindOneAndUpdate(r.Context(), bson.M{"_id": oid}, v) != nil {
-		http.Error(w, "Document not found", http.StatusNotFound)
-	}
-}
+// 	oid, _ := objectid.FromHex(uid)
+// 	fmt.Println(v)
+// 	fmt.Println(DB.Collection(v.Key).UpdateOne(r.Context(), bson.M{"_id": oid}, bson.M{"$set": v})) // != nil {
+// 	// fmt.Println(DB.Collection(v.Key).UpdateOne()
+// 	// 	http.Error(w, "Document not found", http.StatusNotFound)
+// 	// }
+// }
 
 // HandleDeleteOne updates corresponding record
 func HandleDeleteOne(w http.ResponseWriter, r *http.Request) {
